@@ -20,6 +20,15 @@ class DoubleLinkedListTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue($testValue === $node->payload());
 	}
 
+	public function testAddingNext() {
+		$node = new DoubleLinkedList("headNode");
+
+		for ($i = 0; $i < 10; $i++) {
+			$node->insertAfter("Node #".$i);
+			$node = $node->tail();
+		}
+		$this->assertTrue($i+1 == $node->count());
+	}
 
 }
  

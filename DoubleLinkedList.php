@@ -81,7 +81,7 @@ class DoubleLinkedList {
 		while (!is_null($previous->previous)) {
 			$previous = $previous->previous;
 		}
-		return $previous->previous;
+		return $previous;
 	}
 
 	public function tail() {
@@ -89,7 +89,7 @@ class DoubleLinkedList {
 		while (!is_null($next->next)) {
 			$next = $next->next;
 		}
-		return $next->next;
+		return $next;
 	}
 
 	public function count() {

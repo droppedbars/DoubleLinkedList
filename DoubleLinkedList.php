@@ -20,6 +20,10 @@ class DoubleLinkedList {
 		$this->payload = $payload;
 	}
 
+	public function payload() {
+		return $this->payload;
+	}
+
 	public function insertBefore($newPayload) {
 		$node = new DoubleLinkedList($newPayload);
 		$oldPrevious = $this->previous;

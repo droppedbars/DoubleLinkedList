@@ -10,7 +10,7 @@ namespace droppedbars\datastructure;
 
 
 class DoubleLinkedList {
-	private $previous;
+	protected $previous;
 	protected $next;
 	protected $payload;
 
@@ -20,10 +20,20 @@ class DoubleLinkedList {
 		$this->payload = $payload;
 	}
 
+	/**
+	 * Returns the contents of the node
+	 * @return mixed
+	 */
 	public function payload() {
 		return $this->payload;
 	}
 
+	/**
+	 * Create a node with the provided payload and insert it into the linked list before the current node.
+	 * Returns the new node.
+	 * @param $newPayload
+	 * @return DoubleLinkedList
+	 */
 	public function insertBefore($newPayload) {
 		$node = new DoubleLinkedList($newPayload);
 		$oldPrevious = $this->previous;
@@ -35,8 +45,15 @@ class DoubleLinkedList {
 			$oldPrevious->next = $node;
 			$node->previous = $oldPrevious;
 		}
+		return $node;
 	}
 
+	/**
+	 * Create a node with the provided payload and insert it into the linked list after the current node.
+	 * Returns the new node.
+	 * @param $newPayload
+	 * @return DoubleLinkedList
+	 */
 	public function insertAfter($newPayload) {
 		$node = new DoubleLinkedList($newPayload);
 		$oldNext = $this->next;
@@ -48,8 +65,14 @@ class DoubleLinkedList {
 			$oldNext->previous = $node;
 			$node->next = $oldNext;
 		}
+
+		return $node;
 	}
 
+	/**
+	 * Removes the next node in the linked list and links to or from it.
+	 * If another node is attached as the next next node, it will become the new next node.
+	 */
 	public function removeNext() {
 		$next = $this->next;
 		if (!is_null($next)) {
@@ -63,6 +86,10 @@ class DoubleLinkedList {
 		}
 	}
 
+	/**
+	 * Removes the previous node in the linked list and links to or from it.
+	 * If another node is attached as the previous previous node, it will become the new previous node.
+	 */
 	public function removePrevious() {
 		$previous = $this->previous;
 		if (!is_null($previous)) {
@@ -76,6 +103,11 @@ class DoubleLinkedList {
 		}
 	}
 
+	/**
+	 * Returns a reference to the head node in the linked list to which this node belongs.
+	 * If this node is the head, it will return itself.
+	 * @return DoubleLinkedList
+	 */
 	public function head() {
 		$previous = $this;
 		while (!is_null($previous->previous)) {
@@ -84,6 +116,11 @@ class DoubleLinkedList {
 		return $previous;
 	}
 
+	/**
+	 * Returns a reference to the tail node in the linked list to which this node belongs.
+	 * If this node is the tail, it will return itself.
+	 * @return DoubleLinkedList
+	 */
 	public function tail() {
 		$next = $this;
 		while (!is_null($next->next)) {
@@ -92,6 +129,10 @@ class DoubleLinkedList {
 		return $next;
 	}
 
+	/**
+	 * Returns the number of nodes contained within the linked list
+	 * @return int
+	 */
 	public function count() {
 		$node = $this->head();
 		$counter = 1;
@@ -100,6 +141,22 @@ class DoubleLinkedList {
 			$node = $node->next;
 		}
 		return $counter;
+	}
+
+	/**
+	 * Returns the node next to this one, or null
+	 * @return DoubleLinkedList|null
+	 */
+	public function next() {
+		return $this->next;
+	}
+
+	/**
+	 * Returns the node previous to this one, or null
+	 * @return DoubleLinkedList|null
+	 */
+	public function previous() {
+		return $this->previous;
 	}
 
 }

@@ -8,7 +8,7 @@
 
 namespace droppedbars\datastructure;
 
-require_once "./DoubleLinkedList.php";
+require_once "../Structures/DoubleLinkedList.php";
 
 class DoubleLinkedListTest extends \PHPUnit_Framework_TestCase {
 

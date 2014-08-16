@@ -9,7 +9,7 @@ Unit testing is done with PHPUnit 3.7.37 (http://phpunit.de/index.html) as that 
 
 License for all contained in this project:
 
-/*	Copyright 2014 Patrick Mauro (email : patrick@mauro.ca)
+	Copyright 2014 Patrick Mauro (email : patrick@mauro.ca)
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -24,4 +24,3 @@ License for all contained in this project:
 	You should receive a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin St., Fifth Floor, Boston, MA 02110-1301 USA
-*/

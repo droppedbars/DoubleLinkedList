@@ -8,11 +8,24 @@
 
 namespace droppedbars\datastructure;
 
+require_once "../Structures/LinkedTree.php";
+
 
 class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 
 	public function testPayload() {
+		$testValue = "test tree";
+		$node = new LinkedTree($testValue);
+		$this->assertTrue($testValue === $node->payload());
+	}
 
+	public function testChildPayload() {
+		$parentNode = new LinkedTree("some parent");
+
+		$testValue = "test tree";
+		$childNode = new LinkedTree($testValue);
+		$parentNode->addChild($childNode);
+		$this->assertTrue($testValue === $parentNode->getChild()->payload());
 	}
 
 	public function testAddingChildren() {
@@ -32,7 +45,7 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testIteratingChildren() {
-		
+
 	}
 
 }

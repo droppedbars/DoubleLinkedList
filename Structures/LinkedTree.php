@@ -8,6 +8,9 @@
 
 namespace droppedbars\datastructure;
 
+require_once "DoubleLinkedList.php";
+
+
 class LinkedTreeException extends \Exception {}
 class ChildPayloadNotLinkedTreeException extends LinkedTreeException {}
 
@@ -42,6 +45,7 @@ class LinkedTree {
 	public function addChild(LinkedTree $payload) {
 		if (is_null($this->children)) {
 			$this->children = new DoubleLinkedList($payload);
+			$this->childIterator = $this->children;
 		} else {
 			$this->children->tail()->insertAfter($payload);
 		}
@@ -69,8 +73,15 @@ class LinkedTree {
 		if (is_null($this->children)) {
 			return null;
 		} else {
-			$this->childIterator = $this->children->next();
-			return $this->childIterator->payload();
+			if (is_null($this->childIterator)) {
+				$this->childIterator = $this->headChild();
+			}
+			$this->childIterator = $this->childIterator->next();
+			if (is_null($this->childIterator)) {
+				return null;
+			} else {
+				return $this->childIterator->payload();
+			}
 		}
 	}
 
@@ -78,8 +89,15 @@ class LinkedTree {
 		if (is_null($this->children)) {
 			return null;
 		} else {
-			$this->childIterator = $this->children->previous();
-			return $this->childIterator->payload();
+			if (is_null($this->childIterator)) {
+				$this->childIterator = $this->headChild();
+			}
+			$this->childIterator = $this->childrenIterator->previous();
+			if (is_null($this->childIterator)) {
+				return null;
+			} else {
+				return $this->childIterator->payload();
+			}
 		}
 	}
 
@@ -101,15 +119,20 @@ class LinkedTree {
 	}
 
 	public function getChild() {
-		$payload = $this->childIterator->payload();
+		if (!is_null($this->childIterator)) {
+			$payload = $this->childIterator->payload();
 
-		if (!is_null($payload)) {
-			if (!is_a($payload, "LinkedTree")) {
-				throw new ChildPayloadNotLinkedTreeException();
+			if (!is_null($payload)) {
+				if (!$payload instanceof LinkedTree) {
+					throw new ChildPayloadNotLinkedTreeException();
+				}
 			}
-		}
 
-		return $payload;
+			return $payload;
+
+		} else {
+			return null;
+		}
 	}
 
 	public function payload() {

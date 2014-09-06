@@ -25,18 +25,18 @@ class LinkedTree {
 
 	protected function setParent(LinkedTree $newParent) {
 		if (!is_null($this->parent)) {
-			$this->parent->removeChild($this); // TODO dangerous, would be stuck with no references left
-			// TODO: remove $this->parent's reference to this child
-			// TODO: remove old references
+			$node = $this->parent->headChild();
+			while (!is_null($node) && $node !== $this) {
+				$node = $this->parent->nextChild();
+			}
+			$this->parent->removeChild();
 		}
 		$this->parent = $newParent;
 		$newParent->addChild($this);
 	}
 
 	protected function removeParent() {
-		$this->parent->removeChild($this);
 		$this->parent = null;
-		// TODO: deal with linkages
 	}
 
 	public function addChild(LinkedTree $payload) {
@@ -52,7 +52,7 @@ class LinkedTree {
 			return null;
 		} else {
 			$this->childIterator = $this->children->head();
-			return $this->childIterator;
+			return $this->childIterator->payload();
 		}
 	}
 
@@ -61,7 +61,7 @@ class LinkedTree {
 			return null;
 		} else {
 			$this->childIterator = $this->children->tail();
-			return $this->childIterator;
+			return $this->childIterator->payload();
 		}
 	}
 
@@ -70,7 +70,7 @@ class LinkedTree {
 			return null;
 		} else {
 			$this->childIterator = $this->children->next();
-			return $this->childIterator;
+			return $this->childIterator->payload();
 		}
 	}
 
@@ -79,48 +79,23 @@ class LinkedTree {
 			return null;
 		} else {
 			$this->childIterator = $this->children->previous();
-			return $this->childIterator;
+			return $this->childIterator->payload();
 		}
 	}
 
-	public function removeChild(LinkedTree $child = null) {
-		// TODO: must deal with linkages inside the payloads
-		// TODO: probably throw exceptions if the payloads are not LinkedTree types
-		if (is_null($child)) {
-			if (!is_null($this->childIterator)) {
-				if (!is_null($this->childIterator->previous())) {
-					$this->childIterator = $this->childIterator->previous();
-					$this->childIterator->removeNext();
-				} else if (!is_null($this->childIterator->next())) {
-					$this->childIterator = $this->childIterator->next();
-					$this->childIterator->removePrevious();
-				} else { // it was an only child
-					$this->childIterator = null;
-					$this->children = null;
-				}
-			}
-		} else {
-			if (!is_null($this->children)) {
-				$element = null;
-				$nextElement = $this->headChild();
-				while (!(is_null($nextElement)) && !($nextElement->payload() === $child)) {
-					$element = $nextElement;
-					$nextElement = $nextElement->next();
-				}
-				if ($nextElement->payload() === $child) {
-					if (!is_null($element)) {
-						$element->removeNext();
-					} else {
-						$element = $nextElement;
-						$nextElement = $nextElement->next();
-						if (!is_null($nextElement)) {
-							$nextElement->removePrevious();
-						} else { // it was an only child
-							$nextElement = null;
-							$this->children = null;
-						}
-					}
-				}
+	public function removeChild() {
+		if (!is_null($this->childIterator)) {
+			if (!is_null($this->childIterator->previous())) {
+				$this->childIterator->payload()->parent = null;
+				$this->childIterator = $this->childIterator->previous();
+				$this->childIterator->removeNext();
+			} else if (!is_null($this->childIterator->next())) {
+				$this->childIterator->payload()->parent = null;
+				$this->childIterator = $this->childIterator->next();
+				$this->childIterator->removePrevious();
+			} else { // it was an only child
+				$this->childIterator = null;
+				$this->children = null;
 			}
 		}
 	}
@@ -134,7 +109,7 @@ class LinkedTree {
 			}
 		}
 
-		return $this->childIterator->payload();
+		return $payload;
 	}
 
 	public function payload() {

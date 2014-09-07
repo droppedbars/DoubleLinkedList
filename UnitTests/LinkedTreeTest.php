@@ -82,7 +82,26 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 		$parentNode->previousChild();
 		$parentNode->removeChild(); // remove child 3;
 
-		// TODO: keep going and try removing all and beyond.
+		$parentNode->headChild();
+		$this->assertTrue($parentNode->getChild() === $child2);
+		$parentNode->nextChild();
+		$this->assertTrue($parentNode->getChild() === $child4);
+		$parentNode->nextChild();
+		$this->assertNull($parentNode->getChild());
+
+		$parentNode->removeChild(); // shouldn't delete anything
+		$parentNode->headChild();
+		$this->assertTrue($parentNode->getChild() === $child2);
+		$parentNode->nextChild();
+		$this->assertTrue($parentNode->getChild() === $child4);
+
+		$parentNode->headChild();
+		$parentNode->removeChild();
+		$this->assertTrue($parentNode->getChild() === $child4);
+		$parentNode->removeChild();
+		$this->assertNull($parentNode->getChild());
+		$parentNode->removeChild();
+		$this->assertNull($parentNode->getChild());
 	}
 
 	public function testHeadChild() {

@@ -103,6 +103,9 @@ class LinkedTree {
 
 	public function removeChild() {
 		if (!is_null($this->childIterator)) {
+			if ($this->childIterator === $this->children) {
+				$this->children = $this->childIterator->next();
+			}
 			if (!is_null($this->childIterator->previous())) {
 				$this->childIterator->payload()->parent = null;
 				$this->childIterator = $this->childIterator->previous();

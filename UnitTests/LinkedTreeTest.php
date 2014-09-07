@@ -142,6 +142,22 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testIteratingChildren() {
+		$grandParentNode = new LinkedTree("the grandparent");
+
+		$parentArray = Array();
+
+		for ($i=0; $i<5; $i++) {
+			$parent = new LinkedTree("parent ".$i);
+			$parentArray[$i] = $parent;
+			$grandParentNode->addChild($parent);
+
+			for ($j=0; $j<5; $j++) {
+				$child = new LinkedTree("child of ".$i.":".$j);
+				
+			}
+		}
+
+
 
 	}
 

@@ -92,7 +92,7 @@ class LinkedTree {
 			if (is_null($this->childIterator)) {
 				$this->childIterator = $this->headChild();
 			}
-			$this->childIterator = $this->childrenIterator->previous();
+			$this->childIterator = $this->childIterator->previous();
 			if (is_null($this->childIterator)) {
 				return null;
 			} else {

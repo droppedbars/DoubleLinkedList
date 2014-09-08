@@ -145,6 +145,7 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 		$grandParentNode = new LinkedTree("the grandparent");
 
 		$parentArray = Array();
+		$childArray = Array();
 
 		for ($i=0; $i<5; $i++) {
 			$parent = new LinkedTree("parent ".$i);
@@ -153,12 +154,56 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 
 			for ($j=0; $j<5; $j++) {
 				$child = new LinkedTree("child of ".$i.":".$j);
-				
+				$childArray[$i][$j] = $child;
+				$parent->addChild($child);
 			}
 		}
 
+		// walk around the parent level, hitting both head and tail
+		$this->assertTrue($grandParentNode->getChild() === $parentArray[0]);
 
+		$this->assertTrue($grandParentNode->nextChild() === $parentArray[1]);
+		$this->assertTrue($grandParentNode->getChild() === $parentArray[1]);
 
+		$this->assertTrue($grandParentNode->nextChild() === $parentArray[2]);
+		$this->assertTrue($grandParentNode->getChild() === $parentArray[2]);
+
+		$this->assertTrue($grandParentNode->nextChild() === $parentArray[3]);
+		$this->assertTrue($grandParentNode->getChild() === $parentArray[3]);
+
+		$this->assertTrue($grandParentNode->tailChild() === $parentArray[4]);
+		$this->assertTrue($grandParentNode->getChild() === $parentArray[4]);
+
+		$this->assertNull($grandParentNode->nextChild());
+		$this->assertNull($grandParentNode->getChild());
+
+		$this->assertNull($grandParentNode->nextChild());
+		$this->assertNull($grandParentNode->getChild());
+
+		$this->assertTrue($grandParentNode->headChild() === $parentArray[0]);
+		$this->assertTrue($grandParentNode->getChild() === $parentArray[0]);
+
+		$this->assertTrue($grandParentNode->nextChild() === $parentArray[1]);
+		$this->assertTrue($grandParentNode->getChild() === $parentArray[1]);
+
+		$this->assertTrue($grandParentNode->previousChild() === $parentArray[0]);
+		$this->assertTrue($grandParentNode->getChild() === $parentArray[0]);
+
+		$this->assertNull($grandParentNode->previousChild());
+		$this->assertNull($grandParentNode->getChild());
+
+		$this->assertNull($grandParentNode->previousChild());
+		$this->assertNull($grandParentNode->getChild());
+
+		// walk around the grandchildren
+
+		// delete some grandchildren and walk
+
+		// delete some parents and walk
+
+		// add some parents back and walk
+
+		// add some grandchildren back and walk
 	}
 
 }

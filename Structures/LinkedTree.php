@@ -14,18 +14,28 @@ require_once "DoubleLinkedList.php";
 class LinkedTreeException extends \Exception {}
 class ChildPayloadNotLinkedTreeException extends LinkedTreeException {}
 
+/**
+ * Class LinkedTree
+ * @package droppedbars\datastructure
+ */
 class LinkedTree {
 	protected $parent;
 	protected $children;
 	protected $payload;
 	protected $childIterator;
 
+	/**
+	 * @param $payload
+	 */
 	public function __construct($payload) {
 		$this->parent = null;
 		$this->children = null;
 		$this->payload = $payload;
 	}
 
+	/**
+	 * @param LinkedTree $newParent
+	 */
 	protected function setParent(LinkedTree $newParent) {
 		if (!is_null($this->parent)) {
 			$node = $this->parent->headChild();
@@ -38,10 +48,16 @@ class LinkedTree {
 		$newParent->addChild($this);
 	}
 
+	/**
+	 *
+	 */
 	protected function removeParent() {
 		$this->parent = null;
 	}
 
+	/**
+	 * @param LinkedTree $payload
+	 */
 	public function addChild(LinkedTree $payload) {
 		if (is_null($this->children)) {
 			$this->children = new DoubleLinkedList($payload);
@@ -51,6 +67,9 @@ class LinkedTree {
 		}
 	}
 
+	/**
+	 * @return null|LinkedTree
+	 */
 	public function headChild() {
 		if (is_null($this->children)) {
 			return null;
@@ -60,6 +79,9 @@ class LinkedTree {
 		}
 	}
 
+	/**
+	 * @return null|LinkedTree
+	 */
 	public function tailChild() {
 		if (is_null($this->children)) {
 			return null;
@@ -69,6 +91,9 @@ class LinkedTree {
 		}
 	}
 
+	/**
+	 * @return null|LinkedTree
+	 */
 	public function nextChild() {
 		if (is_null($this->children)) {
 			return null;
@@ -85,6 +110,9 @@ class LinkedTree {
 		}
 	}
 
+	/**
+	 * @return null|LinkedTree
+	 */
 	public function previousChild() {
 		if (is_null($this->children)) {
 			return null;
@@ -121,6 +149,10 @@ class LinkedTree {
 		}
 	}
 
+	/**
+	 * @return null|LinkedTree
+	 * @throws ChildPayloadNotLinkedTreeException
+	 */
 	public function getChild() {
 		if (!is_null($this->childIterator)) {
 			$payload = $this->childIterator->payload();
@@ -138,6 +170,9 @@ class LinkedTree {
 		}
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function payload() {
 		return $this->payload;
 	}

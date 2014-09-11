@@ -24,7 +24,10 @@
 
 namespace droppedbars\datastructure;
 
-
+/**
+ * Class DoubleLinkedList
+ * @package droppedbars\datastructure
+ */
 class DoubleLinkedList {
 	protected $previous;
 	protected $next;

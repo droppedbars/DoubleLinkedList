@@ -10,15 +10,24 @@ namespace droppedbars\datastructure;
 
 require_once "../Structures/LinkedTree.php";
 
-
+/**
+ * Class LinkedTreeTest
+ * @package droppedbars\datastructure
+ */
 class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 
+	/**
+	 * Test to ensure the payload of a node behaves properly
+	 */
 	public function testPayload() {
 		$testValue = "test tree";
 		$node = new LinkedTree($testValue);
 		$this->assertTrue($testValue === $node->payload());
 	}
 
+	/**
+	 * Test to ensure the payload of a child node behaves properly
+	 */
 	public function testChildPayload() {
 		$parentNode = new LinkedTree("some parent");
 
@@ -28,6 +37,9 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue($testValue === $parentNode->getChild()->payload());
 	}
 
+	/**
+	 * Test adding a bunch of children to a node
+	 */
 	public function testAddingChildren() {
 		$parentNode = new LinkedTree("the parent");
 
@@ -57,6 +69,9 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 		$this->assertNull($parentNode->getChild());
 	}
 
+	/**
+	 * Test adding a bunch of children, and then removing the children from a node
+	 */
 	public function testRemovingChild() {
 		$parentNode = new LinkedTree("the parent");
 
@@ -104,6 +119,9 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 		$this->assertNull($parentNode->getChild());
 	}
 
+	/**
+	 * Test that the headChild function works as expected
+	 */
 	public function testHeadChild() {
 		$parentNode = new LinkedTree("the parent");
 
@@ -123,6 +141,9 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue($headNode === $parentNode->headChild());
 	}
 
+	/**
+	 * Test that the tailChild function works as expected
+	 */
 	public function testTailChild() {
 		$parentNode = new LinkedTree("the parent");
 
@@ -141,18 +162,24 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 		}
 	}
 
+	/**
+	 * Test iterating through a bunch of children and grandchildren, testing the ends of the lists
+	 */
 	public function testIteratingChildren() {
+		$numParents = 5;
+		$numGrandChildren = 10;
+
 		$grandParentNode = new LinkedTree("the grandparent");
 
 		$parentArray = Array();
 		$childArray = Array();
 
-		for ($i=0; $i<5; $i++) {
+		for ($i=0; $i<$numParents; $i++) {
 			$parent = new LinkedTree("parent ".$i);
 			$parentArray[$i] = $parent;
 			$grandParentNode->addChild($parent);
 
-			for ($j=0; $j<5; $j++) {
+			for ($j=0; $j< $numGrandChildren; $j++) {
 				$child = new LinkedTree("child of ".$i.":".$j);
 				$childArray[$i][$j] = $child;
 				$parent->addChild($child);
@@ -160,19 +187,14 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 		}
 
 		// walk around the parent level, hitting both head and tail
-		$this->assertTrue($grandParentNode->getChild() === $parentArray[0]);
-
-		$this->assertTrue($grandParentNode->nextChild() === $parentArray[1]);
-		$this->assertTrue($grandParentNode->getChild() === $parentArray[1]);
-
-		$this->assertTrue($grandParentNode->nextChild() === $parentArray[2]);
-		$this->assertTrue($grandParentNode->getChild() === $parentArray[2]);
-
-		$this->assertTrue($grandParentNode->nextChild() === $parentArray[3]);
-		$this->assertTrue($grandParentNode->getChild() === $parentArray[3]);
-
-		$this->assertTrue($grandParentNode->tailChild() === $parentArray[4]);
-		$this->assertTrue($grandParentNode->getChild() === $parentArray[4]);
+		for ($k = 0; $k < $numParents; $k++) {
+			if ($k > 0) {
+				$this->assertTrue($grandParentNode->nextChild() === $parentArray[$k]);
+			} else if ($k == $numParents - 1) {
+				$this->assertTrue($grandParentNode->tailChild() === $parentArray[$k]);
+			}
+			$this->assertTrue($grandParentNode->getChild() === $parentArray[$k]);
+		}
 
 		$this->assertNull($grandParentNode->nextChild());
 		$this->assertNull($grandParentNode->getChild());
@@ -196,14 +218,46 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 		$this->assertNull($grandParentNode->getChild());
 
 		// walk around the grandchildren
+		$parentNode = $grandParentNode->headChild();
 
-		// delete some grandchildren and walk
+		for ($i = 0; $i < $numParents; $i++) {
 
-		// delete some parents and walk
+			$this->assertTrue($parentNode === $parentArray[$i]);
 
-		// add some parents back and walk
+			for ($k = 0; $k < $numGrandChildren; $k++) {
+				if ($k > 0) {
+					$this->assertTrue($parentNode->nextChild() === $childArray[$i][$k]);
+				} else if ($k == $numGrandChildren - 1) {
+					$this->assertTrue($parentNode->tailChild() === $childArray[$i][$k]);
+				}
+				$this->assertTrue($parentNode->getChild() === $childArray[$i][$k]);
+			}
 
-		// add some grandchildren back and walk
+			$this->assertNull($parentNode->nextChild());
+			$this->assertNull($parentNode->getChild());
+
+			$this->assertNull($parentNode->nextChild());
+			$this->assertNull($parentNode->getChild());
+
+			$this->assertTrue($parentNode->headChild() === $childArray[$i][0]);
+			$this->assertTrue($parentNode->getChild() === $childArray[$i][0]);
+
+			$this->assertTrue($parentNode->nextChild() === $childArray[$i][1]);
+			$this->assertTrue($parentNode->getChild() === $childArray[$i][1]);
+
+			$this->assertTrue($parentNode->previousChild() === $childArray[$i][0]);
+			$this->assertTrue($parentNode->getChild() === $childArray[$i][0]);
+
+			$this->assertNull($parentNode->previousChild());
+			$this->assertNull($parentNode->getChild());
+
+			$this->assertNull($parentNode->previousChild());
+			$this->assertNull($parentNode->getChild());
+
+			$parentNode = $grandParentNode->nextChild();
+		}
+		$this->assertNull($parentNode);
+
 	}
 
 }

@@ -16,6 +16,7 @@ class ChildPayloadNotLinkedTreeException extends LinkedTreeException {}
 
 /**
  * Class LinkedTree
+ * Datastructure that provides bidirectonal linkage from parent to children, and all the children to each sibling so that the ordering of children is preserved.
  * @package droppedbars\datastructure
  */
 class LinkedTree {
@@ -25,7 +26,7 @@ class LinkedTree {
 	protected $childIterator;
 
 	/**
-	 * @param $payload
+	 * @param $payload object to be stored within the node
 	 */
 	public function __construct($payload) {
 		$this->parent = null;
@@ -34,7 +35,8 @@ class LinkedTree {
 	}
 
 	/**
-	 * @param LinkedTree $newParent
+	 * Attaches this node to a new parent and in turn ensures the parent is attached to this LinkedTree node.  If this node was previously attached to a parent, it will be extracted from that relationship without disturbing any siblings.
+	 * @param LinkedTree $newParent attaches this node to a new pare
 	 */
 	protected function setParent(LinkedTree $newParent) {
 		if (!is_null($this->parent)) {
@@ -49,50 +51,71 @@ class LinkedTree {
 	}
 
 	/**
-	 *
+	 * Removes association of this node to its parent.  It does not however handle removing this node as a child from the parent.
 	 */
 	protected function removeParent() {
 		$this->parent = null;
 	}
 
 	/**
-	 * @param LinkedTree $payload
+	 * Appends a node to the end of the children attached to this node.
+	 * @param LinkedTree $newChild
 	 */
-	public function addChild(LinkedTree $payload) {
+	public function addChild(LinkedTree $newChild) {
 		if (is_null($this->children)) {
-			$this->children = new DoubleLinkedList($payload);
+			$this->children = new DoubleLinkedList($newChild);
 			$this->childIterator = $this->children;
 		} else {
-			$this->children->tail()->insertAfter($payload);
+			$this->children->tail()->insertAfter($newChild);
 		}
 	}
 
 	/**
-	 * @return null|LinkedTree
+	 * Returns the first child of this node, or null if there are no children.  It also ensures that any call to getChild() will return the first child of this node as well.
+	 * @return null|LinkedTree the first child of this node.
+	 * @throws ChildPayloadNotLinkedTreeException Child being returned is not a LinkedTree object
 	 */
 	public function headChild() {
 		if (is_null($this->children)) {
 			return null;
 		} else {
 			$this->childIterator = $this->children->head();
-			return $this->childIterator->payload();
+			$payload = $this->childIterator->payload();
+			if (!is_null($payload)) {
+				if (!$payload instanceof LinkedTree) {
+					throw new ChildPayloadNotLinkedTreeException();
+				}
+			}
+
+			return $payload;
 		}
 	}
 
 	/**
-	 * @return null|LinkedTree
+	 * Returns the last child of this node, or null if there are no children.  It also ensures that any call to getChild() will return the last child of this node as well.
+	 * @return null|LinkedTree the last child of this node
+	 * @throws ChildPayloadNotLinkedTreeException Child being returned is not a LinkedTree object
 	 */
 	public function tailChild() {
 		if (is_null($this->children)) {
 			return null;
 		} else {
 			$this->childIterator = $this->children->tail();
-			return $this->childIterator->payload();
+			$payload = $this->childIterator->payload();
+			if (!is_null($payload)) {
+				if (!$payload instanceof LinkedTree) {
+					throw new ChildPayloadNotLinkedTreeException();
+				}
+			}
+
+			return $payload;
 		}
 	}
 
 	/**
-	 * @return null|LinkedTree
+	 * Returns the next child of this node, or null if there are no children or it has attempted to move beyond the last child of this node.  It also ensures that any call to getChild() will return the returned child as well.
+	 * @return null|LinkedTree the next child of this node
+	 * @throws ChildPayloadNotLinkedTreeException Child being returned is not a LinkedTree object
 	 */
 	public function nextChild() {
 		if (is_null($this->children)) {
@@ -105,13 +128,22 @@ class LinkedTree {
 			if (is_null($this->childIterator)) {
 				return null;
 			} else {
-				return $this->childIterator->payload();
+				$payload = $this->childIterator->payload();
+				if (!is_null($payload)) {
+					if (!$payload instanceof LinkedTree) {
+						throw new ChildPayloadNotLinkedTreeException();
+					}
+				}
+
+				return $payload;
 			}
 		}
 	}
 
 	/**
-	 * @return null|LinkedTree
+	 * Returns the previous child of this node, or null if there are no children or it has attempted to move beyond the first child of this node.  It also ensures that any call to getChild() will return the returned child as well.
+	 * @return null|LinkedTree the previous child of this node
+	 * @throws ChildPayloadNotLinkedTreeException Child being returned is not a LinkedTree object
 	 */
 	public function previousChild() {
 		if (is_null($this->children)) {
@@ -124,11 +156,21 @@ class LinkedTree {
 			if (is_null($this->childIterator)) {
 				return null;
 			} else {
-				return $this->childIterator->payload();
+				$payload = $this->childIterator->payload();
+				if (!is_null($payload)) {
+					if (!$payload instanceof LinkedTree) {
+						throw new ChildPayloadNotLinkedTreeException();
+					}
+				}
+
+				return $payload;
 			}
 		}
 	}
 
+	/**
+	 * Removes the child that is current retrievable via getChild().  It ensures the child does not have a reference to this node, and this node maintains no reference to chat child.  If it was the only child then getChild() will now return null.  If it was the first child, getChild() will return what was the second child (or null).  Otherwise getChild() will no return the child that came before the one being removed.
+	 */
 	public function removeChild() {
 		if (!is_null($this->childIterator)) {
 			if ($this->childIterator === $this->children) {
@@ -150,8 +192,9 @@ class LinkedTree {
 	}
 
 	/**
-	 * @return null|LinkedTree
-	 * @throws ChildPayloadNotLinkedTreeException
+	 * Returns the current child of this node.
+	 * @return null|LinkedTree the current child of this node
+	 * @throws ChildPayloadNotLinkedTreeException Child being returned is not a LinkedTree object
 	 */
 	public function getChild() {
 		if (!is_null($this->childIterator)) {
@@ -171,7 +214,8 @@ class LinkedTree {
 	}
 
 	/**
-	 * @return mixed
+	 * Returns the payload of this node
+	 * @return mixed the payload of this node
 	 */
 	public function payload() {
 		return $this->payload;

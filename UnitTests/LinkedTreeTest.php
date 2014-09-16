@@ -35,6 +35,7 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 		$childNode = new LinkedTree($testValue);
 		$parentNode->addChild($childNode);
 		$this->assertTrue($testValue === $parentNode->getChild()->payload());
+		$this->assertTrue($parentNode === $parentNode->getChild()->getParent());
 	}
 
 	/**
@@ -67,6 +68,12 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue($parentNode->getChild() === $child5);
 		$parentNode->nextChild();
 		$this->assertNull($parentNode->getChild());
+
+		$this->assertTrue($parentNode === $child1->getParent());
+		$this->assertTrue($parentNode === $child2->getParent());
+		$this->assertTrue($parentNode === $child3->getParent());
+		$this->assertTrue($parentNode === $child4->getParent());
+		$this->assertTrue($parentNode === $child5->getParent());
 	}
 
 	/**
@@ -117,6 +124,8 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 		$this->assertNull($parentNode->getChild());
 		$parentNode->removeChild();
 		$this->assertNull($parentNode->getChild());
+
+		$this->assertTrue($parentNode === $child4->getParent());
 	}
 
 	/**
@@ -194,6 +203,7 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 				$this->assertTrue($grandParentNode->tailChild() === $parentArray[$k]);
 			}
 			$this->assertTrue($grandParentNode->getChild() === $parentArray[$k]);
+			$this->assertTrue($grandParentNode === $parentArray[$k]->getParent());
 		}
 
 		$this->assertNull($grandParentNode->nextChild());
@@ -231,6 +241,7 @@ class LinkedTreeTest extends \PHPUnit_Framework_TestCase {
 					$this->assertTrue($parentNode->tailChild() === $childArray[$i][$k]);
 				}
 				$this->assertTrue($parentNode->getChild() === $childArray[$i][$k]);
+				$this->assertTrue($parentNode === $childArray[$i][$k]->getParent());
 			}
 
 			$this->assertNull($parentNode->nextChild());

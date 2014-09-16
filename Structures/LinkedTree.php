@@ -35,26 +35,19 @@ class LinkedTree {
 	}
 
 	/**
-	 * Attaches this node to a new parent and in turn ensures the parent is attached to this LinkedTree node.  If this node was previously attached to a parent, it will be extracted from that relationship without disturbing any siblings.
-	 * @param LinkedTree $newParent attaches this node to a new pare
+	 * Returns the parent of the this node.
+	 * @return null|LinkedTree
+	 * @throws ChildPayloadNotLinkedTreeException
 	 */
-	protected function setParent(LinkedTree $newParent) {
-		if (!is_null($this->parent)) {
-			$node = $this->parent->headChild();
-			while (!is_null($node) && $node !== $this) {
-				$node = $this->parent->nextChild();
+	public function getParent() {
+		$parent = $this->parent;
+		if (!is_null($parent)) {
+			if (!$parent instanceof LinkedTree) {
+				throw new ChildPayloadNotLinkedTreeException();
 			}
-			$this->parent->removeChild();
-		}
-		$this->parent = $newParent;
-		$newParent->addChild($this);
-	}
-
-	/**
-	 * Removes association of this node to its parent.  It does not however handle removing this node as a child from the parent.
-	 */
-	protected function removeParent() {
-		$this->parent = null;
+			return $this->parent;
+			}
+		return null;
 	}
 
 	/**
@@ -62,6 +55,7 @@ class LinkedTree {
 	 * @param LinkedTree $newChild
 	 */
 	public function addChild(LinkedTree $newChild) {
+		$newChild->parent = $this;
 		if (is_null($this->children)) {
 			$this->children = new DoubleLinkedList($newChild);
 			$this->childIterator = $this->children;
